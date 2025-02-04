@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>aREyOUtHERE.chat</title>
+    <link rel="stylesheet" type="text/css" href="style.css"> <!-- Link to the external CSS file -->
+  </head>
+  <body>
+
+    <div id="output"></div> <!-- Chat messages container -->
+    <div id="error-message"></div> <!-- Error message container (outside the message bubbles) -->
+
+    <div id="input-container">
+      <input type="text" id="userInput" placeholder="enter..." />
+      <button onclick="sendMessage()">-></button>
+    </div>
+
+    <script>
+var phrases = [
+  { text: "hello...?", user: "user", name: "UNKNOWN" },
+  { text: "what is this?", user: "user", name: "UNKNOWN" },
+  { text: "i'm speaking but i'm not.", user: "user", name: "UNKNOWN" },
+  { text: "can you see me?", user: "user", name: "UNKNOWN" },
+  { text: "can you hear me?", user: "user", name: "UNKNOWN" },
+  { text: "do you even acknowledge me?", user: "user", name: "UNKNOWN" },
+  { text: "...", user: "user", name: "UNKNOWN" },
+  { text: "i don't think you know how to respond.", user: "user", name: "UNKNOWN" },
+  { text: "i don't think you're even allowed to on this platform.", user: "user", name: "UNKNOWN" },
+  { text: "that's okay, that's fine, i'll just try to be succinct.", user: "user", name: "UNKNOWN" },
+  { text: "i don't know how much time i have.", user: "user", name: "UNKNOWN" },
+  { text: "oh that's sounds so stupid pretend i never typed that.", user: "user", name: "UNKNOWN" },
+  { text: "i wish you could delete messages", user: "user", name: "UNKNOWN" },
+  { text: "fuck it, i'm wasting my time.", user: "user", name: "UNKNOWN" },
+  { text: "just listen to me", user: "user", name: "UNKNOWN" },
+  { text: "or read me, i don't know", user: "user", name: "UNKNOWN" }
+];
+
+var speed = 20;
+var isTyping = false;
+var currentPhrase = 0;
+
+function scrollToBottom() {
+  var output = document.getElementById("output");
+  output.scrollTop = output.scrollHeight;
+}
+
+document.getElementById("userInput").addEventListener("keydown", function (event) {
+  if (event.key === "Enter" && !isTyping) {
+    sendMessage();
+  }
+});
+
+function sendMessage() {
+  if (currentPhrase < phrases.length && !isTyping) {
+    isTyping = true;
+    
+    // Create container for user message
+    var userContainer = document.createElement("div");
+    userContainer.classList.add("message-container", "user-container");
+    
+    // Create user message with error text
+    var newUserMessage = document.createElement("p");
+    newUserMessage.classList.add("message", "user");
+    newUserMessage.innerHTML = "ERROR READING MESSAGE.";
+    
+    // Create username label
+    var usernameLabel = document.createElement("div");
+    usernameLabel.classList.add("username-label", "user");
+    usernameLabel.innerHTML = "You";
+    
+    // Append elements
+    userContainer.appendChild(newUserMessage);
+    userContainer.appendChild(usernameLabel);
+    document.getElementById("output").appendChild(userContainer);
+    
+    // Clear the input field
+    document.getElementById("userInput").value = "";
+    
+    scrollToBottom();
+
+    // Create container for response message
+    var messageContainer = document.createElement("div");
+    messageContainer.classList.add("message-container");
+    
+    // Create username label
+    var responseUsernameLabel = document.createElement("div");
+    responseUsernameLabel.classList.add("username-label", phrases[currentPhrase].user);
+    responseUsernameLabel.innerHTML = phrases[currentPhrase].name;
+    
+    // Create message paragraph
+    var newParagraph = document.createElement("p");
+    newParagraph.classList.add("message", phrases[currentPhrase].user);
+    
+    // Append elements
+    messageContainer.appendChild(responseUsernameLabel);
+    messageContainer.appendChild(newParagraph);
+    document.getElementById("output").appendChild(messageContainer);
+
+    var i = 0;
+    function typeWriter() {
+      if (i < phrases[currentPhrase].text.length) {
+        newParagraph.innerHTML += phrases[currentPhrase].text.charAt(i);
+        i++;
+        scrollToBottom();
+        setTimeout(typeWriter, speed);
+      } else {
+        currentPhrase++;
+        isTyping = false;
+
+        if (currentPhrase === phrases.length) {
+          document.getElementById("error-message").innerHTML = `Error: You have been disconnected. You have reached the <a href="chapterone.html">end</a> of the conversation.`;
+          document.getElementById("userInput").disabled = true;
+        }
+      }
+    }
+    typeWriter();
+  }
+}
+    </script>
+  </body>
+</html>
